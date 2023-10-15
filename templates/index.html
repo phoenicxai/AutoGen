@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock News</title>
+    <style>
+        p {
+            margin: 20px 0;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+    <script>
+        async function fetchData() {
+            const searchTerm = document.getElementById("searchTerm").value;
+            const response = await fetch(`/search?query=${searchTerm}`);
+            const data = await response.json();
+            const resultDiv = document.getElementById("results");
+            
+            // Clear existing results
+            resultDiv.innerHTML = "";
+
+            data.forEach((message) => {
+                const summary = `${message.role}: ${message.content}`;
+                const p = document.createElement("p");
+                p.textContent = summary;
+                resultDiv.appendChild(p);
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Latest Stock News</h1>
+    <input type="text" id="searchTerm" placeholder="Enter stock name">
+    <button onclick="fetchData()">Search</button>
+    <div id="results"></div>
+</body>
+</html>
