@@ -1,38 +1,55 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Stock News</title>
     <style>
-        p {
-            margin: 20px 0;
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 5px;
-        }
-    </style>
-    <script>
-        async function fetchData() {
-            const searchTerm = document.getElementById("searchTerm").value;
-            const response = await fetch(`/search?query=${searchTerm}`);
-            const data = await response.json();
-            const resultDiv = document.getElementById("results");
-            
-            // Clear existing results
-            resultDiv.innerHTML = "";
+      body {
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+          'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 
-            data.forEach((message) => {
-                const summary = `${message.role}: ${message.content}`;
-                const p = document.createElement("p");
-                p.textContent = summary;
-                resultDiv.appendChild(p);
-            });
-        }
+        font-size: small;
+      }
+      .box {
+        width: 600px;
+        margin: 20px 20px 20px 0;
+        padding: 20px;
+        border-style: dotted;
+        border-color: gray;
+        border-radius: 10px;
+        border-width: 2px;
+      }
+
+      p {
+        margin: 20px 0;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+      const socket = io()
+      socket.on('message', function (data) {
+        const container = document.getElementById(data.sender)
+        debugger
+        const messageElement = document.createElement('p')
+        messageElement.innerText = data.message
+        container.appendChild(messageElement)
+      })
+
+      async function start() {
+        const searchTerm = document.getElementById('searchTerm').value
+        await fetch(`/search?query=${searchTerm}`)
+      }
     </script>
-</head>
-<body>
-    <h1>Latest Stock News</h1>
-    <input type="text" id="searchTerm" placeholder="Enter stock name">
-    <button onclick="fetchData()">Search</button>
-    <div id="results"></div>
-</body>
+  </head>
+  <body>
+    <input type="text" id="searchTerm" placeholder="Enter stock name" />
+    <button onclick="start()">Search</button>
+    <div id="results" style="display: flex;">
+      <div id="user_proxy" class="box"><img src="static/images/user_proxy.png" width="100" /></div>
+      <div id="assistant" class="box"><img src="static/images/assistant.png" width="100" /></div>
+
+    </div>
+  </body>
 </html>
